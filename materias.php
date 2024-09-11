@@ -6,12 +6,12 @@ if (isset($_GET['carrera_id'])) {
     $carrera_id = $_GET['carrera_id'];
 
     $sql = "SELECT nombre FROM carreras WHERE id = ?";
-    $stmt = $conn->prepare($sql);
+    $stmt = $conexion->prepare($sql);
     $stmt->execute([$carrera_id]);
     $carrera = $stmt->fetch();
 
     $sql = "SELECT * FROM materias WHERE carrera_id = ?";
-    $stmt = $conn->prepare($sql);
+    $stmt = $conexion->prepare($sql);
     $stmt->execute([$carrera_id]);
     $materias = $stmt->fetchAll();
 }
