@@ -84,7 +84,7 @@
     </script>
 </head>
 <body>
-
+    
 <form onsubmit="return validateForm();">
     <h1>Formulario de Pre-Inscripción</h1>
 

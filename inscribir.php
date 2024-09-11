@@ -1,5 +1,6 @@
 <?php
-require 'db.php';
+
+require_once './data_base/db_urquiza.php';
 
 $success_message = '';
 
@@ -33,6 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -193,4 +195,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
-

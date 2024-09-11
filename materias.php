@@ -1,5 +1,6 @@
 <?php
-require 'db.php';
+
+require_once './data_base/db_urquiza.php';
 
 if (isset($_GET['carrera_id'])) {
     $carrera_id = $_GET['carrera_id'];
@@ -14,6 +15,7 @@ if (isset($_GET['carrera_id'])) {
     $stmt->execute([$carrera_id]);
     $materias = $stmt->fetchAll();
 }
+
 ?>
 
 <!DOCTYPE html>

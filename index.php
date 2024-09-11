@@ -1,9 +1,10 @@
 <?php
-require_once 'data_base/db_urquiza.php';
 
-if ($conn) {
+require_once './data_base/db_urquiza.php';
+
+if ($conexion) {
     $sql = "SELECT * FROM carreras";
-    $stmt = $conn->prepare($sql);
+    $stmt = $conexion->prepare($sql);
     $stmt->execute();
     $carreras = $stmt->fetchAll();
 } else {
@@ -11,6 +12,7 @@ if ($conn) {
     $error_message = 'No se pudo establecer conexión con la base de datos.';
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -256,6 +258,7 @@ if ($conn) {
         <h1>Alumnado</h1>
     </section>
 
+
     <main>
         <aside class="left-aside">
             <h2>Seleccione una Carrera</h2>
@@ -304,6 +307,7 @@ if ($conn) {
             </ul>
         </aside>
     </main>
+
 
     <footer id="contacto">
         <h2>CONTACTO</h2>
