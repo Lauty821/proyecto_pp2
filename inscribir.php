@@ -5,26 +5,28 @@ require_once './data_base/db_urquiza.php';
 $success_message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = $_POST['nombre'];
-    $apellido = $_POST['apellido'];
-    $fecha_nacimiento = $_POST['fecha_nacimiento'];
-    $genero = $_POST['genero'];
-    $direccion = $_POST['direccion'];
-    $localidad = $_POST['localidad'];
-    $provincia = $_POST['provincia'];
-    $nacionalidad = $_POST['nacionalidad'];
-    $email = $_POST['email'];
-    $telefono = $_POST['telefono'];
-    $tipo_estudiante = $_POST['tipo_estudiante'];
-    $carrera_id = $_POST['carrera_id'];
-    $materias = $_POST['materias'];
+    // Usar el operador ternario para manejar campos vacíos
+    $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : '';
+    $apellido = isset($_POST['apellido']) ? $_POST['apellido'] : '';
+    $fecha_nacimiento = isset($_POST['fecha_nacimiento']) ? $_POST['fecha_nacimiento'] : '';
+    $genero = isset($_POST['genero']) ? $_POST['genero'] : '';
+    $direccion = isset($_POST['direccion']) ? $_POST['direccion'] : '';
+    $localidad = isset($_POST['localidad']) ? $_POST['localidad'] : '';
+    $provincia = isset($_POST['provincia']) ? $_POST['provincia'] : '';
+    $nacionalidad = isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : '';
+    $email = isset($_POST['email']) ? $_POST['email'] : '';
+    $telefono = isset($_POST['telefono']) ? $_POST['telefono'] : '';
+    $tipo_estudiante = isset($_POST['tipo_estudiante']) ? $_POST['tipo_estudiante'] : '';
+    $carrera_id = isset($_POST['carrera_id']) ? $_POST['carrera_id'] : '';
+    $materias = isset($_POST['materias']) ? $_POST['materias'] : [];
 
+    // Verificar si todos los campos obligatorios tienen valores
     if ($nombre && $apellido && $fecha_nacimiento && $genero && $direccion && $localidad && $provincia && $nacionalidad && $email && $telefono && $tipo_estudiante && $carrera_id && !empty($materias)) {
         $usuario = "Usuario Anónimo";
 
         foreach ($materias as $materia_id) {
             $sql = "INSERT INTO inscripciones (usuario, carrera_id, materia_id) VALUES (?, ?, ?)";
-            $stmt = $conn->prepare($sql);
+            $stmt = $conexion->prepare($sql);
             $stmt->execute([$usuario, $carrera_id, $materia_id]);
         }
 
@@ -162,7 +164,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="ingresante">Ingresante de primer año</label>
         <input type="radio" id="recursante" name="tipo_estudiante" value="Recursante" required>
         <label for="recursante">Recursante de primer año</label>
-	<input type="radio" id="recursante" name="tipo_estudiante" value="Recursante" required>
+        <input type="radio" id="recursante" name="tipo_estudiante" value="Cursante" required>
         <label for="recursante">Cursante de segundo/tercer año</label>
     </div>
 
@@ -170,13 +172,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="materias">Materias a las que se inscribe:</label>
         <select id="materias" name="materias[]" multiple required>
             <?php
-            if (!empty($materias)) {
-                foreach ($materias as $materia_id) {
-                    $sql = "SELECT nombre FROM materias WHERE id = ?";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute([$materia_id]);
-                    $materia = $stmt->fetch();
-                    echo "<option value=\"$materia_id\">{$materia['nombre']}</option>";
+            $sql = "SELECT id, nombre FROM materias";
+            $stmt = $conexion->prepare($sql);
+            $stmt->execute();
+            $materias_disponibles = $stmt->fetchAll();
+            if (!empty($materias_disponibles)) {
+                foreach ($materias_disponibles as $materia) {
+                    echo "<option value=\"{$materia['id']}\">{$materia['nombre']}</option>";
                 }
             }
             ?>

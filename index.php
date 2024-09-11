@@ -243,9 +243,9 @@ if ($conexion) {
             <p>Escuela Superior Nº 49<br>Capitán General Justo José de Urquiza<br>Nivel Terciario</p>
         </div>
         <nav>
-            <a href="#inicio" class="nav-link">Inicio</a>
+            <a href="./index.php" class="nav-link">Inicio</a>
             <a href="#calendario" class="nav-link">Calendario académico</a>
-            <a href="#alumnado" class="nav-link">Alumnado</a>
+            <a href="#alumnado" class="nav-link">Iniciar sesión</a>
             <a href="#contacto" class="nav-link">Contacto</a>
         </nav>
     </header>
