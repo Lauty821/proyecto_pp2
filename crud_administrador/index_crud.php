@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CRUD Usuarios</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="./css/styles.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uicons@2.0.9/css/uicons-regular-rounded.css">
 </head>
 <body>
 
@@ -39,10 +40,11 @@
                 <td><?php echo $email; ?></td>
                 <td>
                     <a href="editar_usuario.php?id=<?php echo $id;?>" class="edit" title="Editar" data-toggle="tooltip">
-                        <i class="fa fa-pencil"></i>
+                        <i class="fi fi-rr-pencil"></i>
                     </a>
+                    
                     <a href="eliminar_usuario.php?id=<?php echo $id;?>" class="delete" title="Eliminar" data-toggle="tooltip">
-                        <i class="fa fa-trash"></i>
+                        <i class="fi fi-rr-trash"></i>
                     </a>
                 </td>
             </tr>
