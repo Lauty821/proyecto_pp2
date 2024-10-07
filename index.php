@@ -6,13 +6,12 @@ if ($conexion) {
     $sql = "SELECT * FROM carreras";
     $stmt = $conexion->prepare($sql);
     $stmt->execute();
-    $carreras = $stmt->fetchAll();
+    $carreras = $stmt->fetchAll(PDO::FETCH_ASSOC); // Asegúrate de obtener un array asociativo
 } else {
     $carreras = [];
     $error_message = 'No se pudo establecer conexión con la base de datos.';
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -22,7 +21,6 @@ if ($conexion) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscripción a Carreras</title>
     <link rel="stylesheet" href="css/style.css">
-
 </head>
 
 <body>
@@ -47,7 +45,6 @@ if ($conexion) {
         <h1>Alumnado</h1>
     </section>
 
-
     <main>
         <aside class="left-aside">
             <h2>Seleccione una Carrera</h2>
@@ -64,7 +61,7 @@ if ($conexion) {
                         <?php } elseif ($carrera['id'] == 3) { ?>
                             <img src="https://terciariourquiza.edu.ar/wp-content/uploads/2023/08/j_iti_solo_chico.jpg" alt="Logo de Infraestructura en TI">
                         <?php } ?>
-                        <a href="materias.php?carrera_id=<?php echo $carrera['id']; ?>"><?php echo $carrera['nombre']; ?></a>
+                        <a href="materias.php?carrera_id=<?php echo $carrera['id']; ?>"><?php echo htmlspecialchars($carrera['nombre']); ?></a>
                     </div>
                 <?php } ?>
             <?php } else { ?>
@@ -96,7 +93,6 @@ if ($conexion) {
             </ul>
         </aside>
     </main>
-
 
     <footer id="contacto">
         <h2>CONTACTO</h2>

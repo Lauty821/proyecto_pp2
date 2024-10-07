@@ -1,25 +1,125 @@
-CREATE DATABASE  IF NOT EXISTS `instituto`;
-USE `instituto`;
+-- Creación de la base de datos y selección de la misma
+CREATE DATABASE IF NOT EXISTS db_urquiza;
+USE db_urquiza;
 
-CREATE TABLE carreras (
+CREATE TABLE Alumnos (
+    ID_Alumno INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(45) NOT NULL,
+    Apellido VARCHAR(45) NOT NULL,
+    DNI INT NOT NULL,
+    Mail VARCHAR(45),
+    Domicilio VARCHAR(45)
+);
+
+CREATE TABLE Docentes (
+    ID_Docente INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(45) NOT NULL,
+    Apellido VARCHAR(45) NOT NULL,
+    Legajo VARCHAR(45) NOT NULL,
+    Mail VARCHAR(45),
+    Domicilio VARCHAR(45)
+);
+
+CREATE TABLE Bedeles (
+    ID_Bedel INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(45) NOT NULL,
+    Apellido VARCHAR(45) NOT NULL,
+    Legajo VARCHAR(45) NOT NULL,
+    Telefono VARCHAR(45),
+    Domicilio VARCHAR(45)
+);
+
+CREATE TABLE Carreras (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL
 );
+
+CREATE TABLE Materias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    carrera_id INT,
+    nombre VARCHAR(100) NOT NULL,
+    anio INT NOT NULL,
+    FOREIGN KEY (carrera_id) REFERENCES Carreras(id)
+);
+
+CREATE TABLE Comisiones (
+    ID_Comision INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(45) NOT NULL
+);
+
+CREATE TABLE MateriasProfesores (
+    ID_Materia INT,
+    ID_Profesor INT,
+    PRIMARY KEY (ID_Materia, ID_Profesor),
+    FOREIGN KEY (ID_Materia) REFERENCES Materias(id),  -- Asegúrate de usar 'id'
+    FOREIGN KEY (ID_Profesor) REFERENCES Docentes(ID_Docente)
+);
+
+CREATE TABLE MateriasComisiones (
+    ID_Materia INT,
+    ID_Comision INT,
+    CantidadHoras INT,
+    PRIMARY KEY (ID_Materia, ID_Comision),
+    FOREIGN KEY (ID_Materia) REFERENCES Materias(id),  -- Asegúrate de usar 'id'
+    FOREIGN KEY (ID_Comision) REFERENCES Comisiones(ID_Comision)
+);
+
+CREATE TABLE AlumnosMaterias (
+    ID_Alumno INT,
+    ID_Materia INT,
+    PRIMARY KEY (ID_Alumno, ID_Materia),
+    FOREIGN KEY (ID_Alumno) REFERENCES Alumnos(ID_Alumno),
+    FOREIGN KEY (ID_Materia) REFERENCES Materias(id)  -- Asegúrate de usar 'id'
+);
+
+CREATE TABLE Mesas (
+    ID_Mesa INT PRIMARY KEY AUTO_INCREMENT,
+    FechaMesa DATE NOT NULL
+);
+
+CREATE TABLE MesasMaterias (
+    ID_Mesa INT,
+    ID_Materia INT,
+    PRIMARY KEY (ID_Mesa, ID_Materia),
+    FOREIGN KEY (ID_Mesa) REFERENCES Mesas(ID_Mesa),
+    FOREIGN KEY (ID_Materia) REFERENCES Materias(id)  -- Asegúrate de usar 'id'
+);
+
+CREATE TABLE MesasProfesores (
+    ID_Mesa INT,
+    ID_Profesor INT,
+    PRIMARY KEY (ID_Mesa, ID_Profesor),
+    FOREIGN KEY (ID_Mesa) REFERENCES Mesas(ID_Mesa),
+    FOREIGN KEY (ID_Profesor) REFERENCES Docentes(ID_Docente)
+);
+
+CREATE TABLE MesasAlumnosMaterias (
+    ID_Mesa INT,
+    ID_Alumno INT,
+    ID_Materia INT,
+    PRIMARY KEY (ID_Mesa, ID_Alumno, ID_Materia),
+    FOREIGN KEY (ID_Mesa) REFERENCES Mesas(ID_Mesa),
+    FOREIGN KEY (ID_Alumno) REFERENCES Alumnos(ID_Alumno),
+    FOREIGN KEY (ID_Materia) REFERENCES Materias(id)  -- Asegúrate de usar 'id'
+);
+
+CREATE TABLE inscripciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(100) NOT NULL,
+    carrera_id INT,
+    materia_id INT,
+    FOREIGN KEY (carrera_id) REFERENCES Carreras(id),
+    FOREIGN KEY (materia_id) REFERENCES Materias(id)  -- Asegúrate de usar 'id'
+);
+
+
 
 INSERT INTO carreras (nombre) VALUES 
     ('Analista Funcional'), 
     ('Desarrollador de Software'), 
     ('Infraestructura en Tecnologia de la Información');
-
-CREATE TABLE materias (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    carrera_id INT,
-    nombre VARCHAR(100) NOT NULL,
-    anio INT NOT NULL,
-    FOREIGN KEY (carrera_id) REFERENCES carreras(id)
-);
-
-INSERT INTO materias (carrera_id, nombre, anio) VALUES    
+    
+    INSERT INTO materias (carrera_id, nombre, anio) VALUES    
     -- Materias de Analista Funcional
     -- Primer año
     (1, 'Comunicación 1', 1),
@@ -108,13 +208,3 @@ INSERT INTO materias (carrera_id, nombre, anio) VALUES
     (3, 'Integridad y Migración de Datos', 3),
     (3, 'Administración de Sistemas Operativos y Redes', 3),
     (3, 'Práctica Profesionalizante 2', 3);
-
-CREATE TABLE inscripciones (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario VARCHAR(100) NOT NULL,
-    carrera_id INT,
-    materia_id INT,
-    FOREIGN KEY (carrera_id) REFERENCES carreras(id),
-    FOREIGN KEY (materia_id) REFERENCES materias(id)
-);
-
