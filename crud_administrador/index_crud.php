@@ -1,3 +1,14 @@
+<?php
+// Incluir conexión a la base de datos
+require_once "./data_base/db_urquiza.php";
+
+// Consultar usuarios
+$query = "SELECT id, nombre, email FROM usuarios";
+$stmt = $conexion->prepare($query);
+$stmt->execute();
+$listado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,7 +24,7 @@
         <div class="row">
             <div class="col-md-10"><h2>Lista de <b>Usuarios</b></h2></div>
             <div class="col-md-2">
-                <a href="agregar_usuario.php" class="btn btn-info add-new"><i class="fa fa-plus"></i> Agregar</a>
+                <a href="agregar_usuario.php" class="btn btn-info add-new"><i class="fa fa-plus"></i> Agregar usuario</a>
             </div>
         </div>
     </div>
@@ -22,6 +33,7 @@
         <thead>
             <tr>
                 <th>Nombre</th>
+                <th>Apellido</th>
                 <th>Email</th>
                 <th>Rol</th>
                 <th>Acciones</th>
