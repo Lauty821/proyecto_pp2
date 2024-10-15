@@ -27,17 +27,24 @@ class Database
         return mysqli_real_escape_string($this->conexion, $var);
     }
 
+    // Método para crear un nuevo registro
     public function create($nombre, $apellido, $dni, $mail, $contraseña) {
         $sql = "INSERT INTO alumnos (nombre, apellido, dni, mail, contraseña) VALUES (?, ?, ?, ?, ?)";
         $query = $this->conexion->prepare($sql);
+        
+        if (!$query) {
+            die("Error en la preparación de la consulta: " . $this->conexion->error);
+        }
+        
         $query->bind_param("sssss", $nombre, $apellido, $dni, $mail, $contraseña);
+        
         if ($query->execute()) {
             return true;
         } else {
+            echo "Error en la inserción: " . $query->error; // Imprimir error
             return false;
         }
     }
-    
 
     // Leer todos los registros de la tabla Alumnos
     public function read()
@@ -58,7 +65,7 @@ class Database
     // Actualizar un registro de alumno
     public function update($nombre, $apellido, $dni, $mail, $contraseña, $id)
     {
-        $sql = "UPDATE Alumnos SET Nombre=?, Apellido=?, DNI=?, Mail=?, Contraseña=? WHERE id=?";
+        $sql = "UPDATE Alumnos SET nombre=?, apellido=?, dni=?, mail=?, contraseña=? WHERE id=?";
         $query = $this->conexion->prepare($sql);
         $query->bind_param("sssssi", $nombre, $apellido, $dni, $mail, $contraseña, $id);
         
@@ -83,3 +90,4 @@ class Database
         }
     }
 }
+?>

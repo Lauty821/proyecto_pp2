@@ -111,7 +111,6 @@ a:hover {
 
 
 
-
 /* CSS de agregar.php */
 * {
     margin: 0;
@@ -237,4 +236,31 @@ body {
     padding: 10px;
     margin-top: 15px;
     border-radius: 5px;
+}
+
+
+
+.mensaje {
+    display: flex;                /* Utiliza Flexbox para centrar el contenido */
+    justify-content: center;      /* Centra horizontalmente */
+    align-items: center;          /* Centra verticalmente */
+    padding: 10px;               /* Espaciado interno */
+    margin: 10px 0;              /* Margen vertical */
+    border-radius: 5px;          /* Bordes redondeados */
+    text-align: center;           /* Centra el texto dentro del cuadro */
+}
+
+.advertencia {
+    background-color: #f9e79f; /* Color amarillo claro para advertencias */
+    color: #7d6608; /* Color oscuro para texto */
+}
+
+.exito {
+    background-color: #a9dfbf; /* Color verde claro para éxito */
+    color: #0e6251; /* Color oscuro para texto */
+}
+
+.error {
+    background-color: #f5b7b1; /* Color rojo claro para errores */
+    color: #641e16; /* Color oscuro para texto */
 }
