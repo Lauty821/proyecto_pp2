@@ -1,4 +1,5 @@
 <?php
+
 class Alumno {
     private $nombre;
     private $apellido;
@@ -17,7 +18,8 @@ class Alumno {
     }
 
     public function registrarAlumno() {
-        return $this->db->create($this->nombre, $this->apellido, $this->dni, $this->mail, $this->contraseña);
+        return $this->db->create_alumno($this->nombre, $this->apellido, $this->dni, $this->mail, $this->contraseña);
     }
 }
+
 ?>

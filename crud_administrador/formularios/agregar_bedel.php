@@ -2,7 +2,7 @@
 session_start(); // Iniciar la sesión
 
 require_once '../data_base/db_urquiza.php';
-require_once '../model/alumno.php';
+require_once '../model/bedel.php';
 
 // Crear una instancia de la clase Database
 $db = new Database();
@@ -24,11 +24,12 @@ if (isset($_SESSION['mensaje'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Verificar si los datos están definidos
     if (isset($_POST['nombre'], $_POST['apellido'], 
-    $_POST['dni'], $_POST['mail'], $_POST['contraseña'], 
+    $_POST['dni'],  $_POST['legajo'], $_POST['mail'], $_POST['contraseña'], 
     $_POST['repetir_contraseña'])) {
         $nombre = $_POST['nombre'];
         $apellido = $_POST['apellido'];
         $dni = $_POST['dni'];
+        $legajo = $_POST['legajo'];
         $mail = $_POST['mail'];
         $contraseña = $_POST['contraseña'];
         $repetir_contraseña = $_POST['repetir_contraseña'];
@@ -39,32 +40,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: " . $_SERVER['PHP_SELF']); // Redirigir para evitar reenvío de formulario
             exit();
         } else {
-            // Encriptar la contraseña antes de crear el objeto Alumno
+            // Encriptar la contraseña antes de crear el objeto Bedel
             $contraseña_hash = password_hash($contraseña, PASSWORD_DEFAULT);
 
-            // Verificar si el mail o el dni ya existen en la base de datos
-            $sql = "SELECT * FROM alumnos WHERE dni = ? OR mail = ?";
+            // Verificar si el mail, el dni o el legajo ya existen en la base de datos para bedeles
+            $sql = "SELECT * FROM bedeles WHERE dni = ? OR legajo = ? OR mail = ?";
             $stmt = $db->conexion->prepare($sql);
-            $stmt->bind_param("ss", $dni, $mail);
+            $stmt->bind_param("sss", $dni, $legajo, $mail,);
             $stmt->execute();
             $resultado = $stmt->get_result();
 
             // Comprobar si hay resultados
             if ($resultado->num_rows > 0) {
-                $_SESSION['mensaje'] = "<div class='mensaje advertencia'>El DNI y/o mail ya están registrados.</div>";
+                $_SESSION['mensaje'] = "<div class='mensaje advertencia'>El DNI, mail o legajo ya están registrados.</div>";
                 header("Location: " . $_SERVER['PHP_SELF']); // Redirigir para evitar reenvío de formulario
                 exit();
             } else {
-                // Si no hay coincidencias, registrar el alumno
-                $alumno = new Alumno($nombre, $apellido, $dni, $mail, $contraseña_hash, $db);
-                $resultado = $alumno->registrarAlumno();
+                // Si no hay coincidencias, registrar el bedel
+                $bedel = new Bedel($nombre, $apellido, $dni, $legajo, $mail, $contraseña_hash, $db);
+                $resultado = $bedel->registrarBedel();
                 
                 if ($resultado === true) {
-                    $_SESSION['mensaje'] = "<div class='mensaje exito'>El usuario se pudo registrar exitosamente.</div>";
+                    $_SESSION['mensaje'] = "<div class='mensaje exito'>El bedel se registró exitosamente.</div>";
                     header("Location: " . $_SERVER['PHP_SELF']); // Redirigir para evitar reenvío de formulario
                     exit();
                 } else {
-                    $_SESSION['mensaje'] = "<div class='mensaje error'>Hubo un error al registrar el usuario: " . $db->conexion->error . "</div>";
+                    $_SESSION['mensaje'] = "<div class='mensaje error'>Hubo un error al registrar el bedel: " . $db->conexion->error . "</div>";
                     header("Location: " . $_SERVER['PHP_SELF']); // Redirigir para evitar reenvío de formulario
                     exit();
                 }
@@ -78,15 +79,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Alumno</title>
+    <title>Agregar Bedel</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/styles.css?v=2.0">
-    <link rel="stylesheet" href="../css/styles.css?v=3.0">
     <script>
         function togglePasswordVisibility(inputId, buttonId) {
             const passwordInput = document.getElementById(inputId);
@@ -98,8 +100,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </script>
 </head>
 <body>
-<div class="container-alumno">
-    <h1>Agregar Alumno</h1>
+<div class="container-bedel">
+    <h1>Agregar Bedel</h1>
     
     <!-- Mostrar mensajes -->
     <div><?php echo $mensaje; ?></div>
@@ -113,6 +115,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <label for="dni">DNI:</label>
         <input type="text" id="dni" name="dni" maxlength="8" required>
+
+        <label for="legajo">Legajo:</label>
+        <input type="text" id="legajo" name="legajo" maxlength="45" required>
 
         <label for="mail">Mail:</label>
         <input type="email" id="mail" name="mail" required>
@@ -129,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="button" id="btnRepetirContraseña" onclick="togglePasswordVisibility('repetir_contraseña', 'btnRepetirContraseña')">❌</button>
         </div>
 
-        <input type="submit" value="Registrar Alumno">
+        <input type="submit" value="Registrar Bedel"> <!-- Cambiado el texto del botón -->
     </form>
 </div>
 </body>

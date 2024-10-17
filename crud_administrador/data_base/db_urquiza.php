@@ -1,4 +1,5 @@
 <?php
+
 class Database
 {
     public $conexion;
@@ -27,8 +28,8 @@ class Database
         return mysqli_real_escape_string($this->conexion, $var);
     }
 
-    // Método para crear un nuevo registro
-    public function create($nombre, $apellido, $dni, $mail, $contraseña) {
+    // Con este método para crear un nuevo registro en la 
+    public function create_alumno($nombre, $apellido, $dni, $mail, $contraseña) {
         $sql = "INSERT INTO alumnos (nombre, apellido, dni, mail, contraseña) VALUES (?, ?, ?, ?, ?)";
         $query = $this->conexion->prepare($sql);
         
@@ -47,23 +48,23 @@ class Database
     }
 
     // Leer todos los registros de la tabla Alumnos
-    public function read()
+    public function read_alumno()
     {
         $sql = "SELECT * FROM Alumnos";
         $res = mysqli_query($this->conexion, $sql);
         return $res;
     }
 
-    // Obtener un único registro (alumno) por su ID
-    public function single_record($id)
+    // Con este método se puede obtener un único registro (alumno) por su ID.
+    public function single_record_alumno($id)
     {
         $sql = "SELECT * FROM Alumnos WHERE id='$id'";
         $res = mysqli_query($this->conexion, $sql);
         return mysqli_fetch_object($res);
     }
 
-    // Actualizar un registro de alumno
-    public function update($nombre, $apellido, $dni, $mail, $contraseña, $id)
+    // Con este método actualizo un registro de la tabla Alumnos.
+    public function update_alumno($nombre, $apellido, $dni, $mail, $contraseña, $id)
     {
         $sql = "UPDATE Alumnos SET nombre=?, apellido=?, dni=?, mail=?, contraseña=? WHERE id=?";
         $query = $this->conexion->prepare($sql);
@@ -76,10 +77,68 @@ class Database
         }
     }
 
-    // Eliminar un registro de alumno
-    public function delete($id)
+    // Con este método elimino un registro de la tabla Alumnos.
+    public function delete_alumno($id)
     {
         $sql = "DELETE FROM Alumnos WHERE id=?";
+        $query = $this->conexion->prepare($sql);
+        $query->bind_param("i", $id);
+        
+        if ($query->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+
+
+    public function create_bedel($nombre, $apellido, $dni, $legajo, $mail, $contraseña) {
+        // Consulta SQL con el orden correcto de los campos
+        $sql = "INSERT INTO bedeles (nombre, apellido, dni, legajo, mail, contraseña) VALUES (?, ?, ?, ?, ?, ?)";
+        
+        // Preparar la consulta
+        $stmt = $this->conexion->prepare($sql);
+        
+        // Asegurarse de que los parámetros estén en el orden correcto
+        $stmt->bind_param("ssssss", $nombre, $apellido, $dni, $legajo, $mail, $contraseña);
+        
+        // Ejecutar la consulta y retornar el resultado
+        return $stmt->execute();
+    }
+
+    public function read_bedel()
+    {
+        $sql = "SELECT * FROM bedeles";
+        $res = mysqli_query($this->conexion, $sql);
+        return $res;
+    }
+
+    public function single_record_bedel($id)
+    {
+        $sql = "SELECT * FROM bedeles WHERE id='$id'";
+        $res = mysqli_query($this->conexion, $sql);
+        return mysqli_fetch_object($res);
+    }
+
+    public function update_bedel($nombre, $apellido, $dni, $mail, $legajo, $contraseña, $id)
+    {
+        $sql = "UPDATE bedeles SET nombre=?, apellido=?, dni=?, mail=?, legajo=?, contraseña=? WHERE id=?";
+        $query = $this->conexion->prepare($sql);
+        $query->bind_param("ssssssi", $nombre, $apellido, $dni, $mail, $legajo, $contraseña, $id);
+        
+        if ($query->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function delete_bedel($id)
+    {
+        $sql = "DELETE FROM bedeles WHERE id=?";
         $query = $this->conexion->prepare($sql);
         $query->bind_param("i", $id);
         
