@@ -94,20 +94,25 @@ class Database
 
 
 
-
     public function create_bedel($nombre, $apellido, $dni, $legajo, $mail, $contraseña) {
         // Consulta SQL con el orden correcto de los campos
         $sql = "INSERT INTO bedeles (nombre, apellido, dni, legajo, mail, contraseña) VALUES (?, ?, ?, ?, ?, ?)";
+        $query = $this->conexion->prepare($sql);
+
+        if (!$query) {
+            die("Error en la preparación de la consulta: " . $this->conexion->error);
+        }
         
-        // Preparar la consulta
-        $stmt = $this->conexion->prepare($sql);
+        $query->bind_param("ssssss", $nombre, $apellido, $dni, $legajo, $mail, $contraseña);
         
-        // Asegurarse de que los parámetros estén en el orden correcto
-        $stmt->bind_param("ssssss", $nombre, $apellido, $dni, $legajo, $mail, $contraseña);
-        
-        // Ejecutar la consulta y retornar el resultado
-        return $stmt->execute();
+        if ($query->execute()) {
+            return true;
+        } else {
+            echo "Error en la inserción: " . $query->error; // Imprimir error
+            return false;
+        }
     }
+
 
     public function read_bedel()
     {
@@ -116,12 +121,14 @@ class Database
         return $res;
     }
 
+
     public function single_record_bedel($id)
     {
         $sql = "SELECT * FROM bedeles WHERE id='$id'";
         $res = mysqli_query($this->conexion, $sql);
         return mysqli_fetch_object($res);
     }
+
 
     public function update_bedel($nombre, $apellido, $dni, $mail, $legajo, $contraseña, $id)
     {
@@ -136,6 +143,7 @@ class Database
         }
     }
 
+    
     public function delete_bedel($id)
     {
         $sql = "DELETE FROM bedeles WHERE id=?";
