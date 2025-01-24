@@ -1,4 +1,4 @@
-/* Este es el CSS de index.php */
+/* index.php */
 * {
     margin: 0;
     padding: 0;
@@ -213,4 +213,141 @@ footer h2 {
 
 
 
-/* Estilo del Formulario de pre inscripción.
+/* preinscripcion.php */
+body {
+    font-family: 'Roboto', sans-serif;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+ul {
+    margin-bottom: 20px;
+}
+
+ul li {
+    margin-bottom: 10px;
+}
+
+.form-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.form-button a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1b1b32;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.form-button a:hover {
+    background-color: coral;
+}
+
+
+
+/* formulariopre.php */
+body {
+    font-family: 'Roboto', sans-serif;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 600px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    background-color: #1b1b32;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-actions button:hover {
+    background-color: coral;
+}
+
+.form-actions .print-button {
+    background-color: #555;
+}
+
+.form-actions .print-button:hover {
+    background-color: #999;
+}
+
+.mandatory {
+    color: red;
+    font-weight: bold;
+}
+
+
+
+/* Estilo general para los mensajes */
+.mensaje {
+    margin: 20px 0;
+    
+    padd
+padding: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    
+    text-text-align: center;
+    color: #fff; /* Texto blanco por defecto */
+}
+
+/* Mensaje de éxito */
+.mensaje.exito {
+    background-color: #4CAF50; /* Verde */
+    border: 1px solid #45a049; /* Borde verde */
+}
+
+/* Mensaje de error */
+.mensaje.error {
+    background-color: #f44336; /* Rojo */
+    border: 1px solid #d32f2f; /* Borde rojo */
+}
