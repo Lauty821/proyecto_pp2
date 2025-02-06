@@ -327,27 +327,24 @@ input, select {
 
 
 
-/* Estilo general para los mensajes */
 .mensaje {
-    margin: 20px 0;
-    
-    padd
-padding: 15px;
-    border-radius: 5px;
-    font-size: 16px;
-    
-    text-text-align: center;
-    color: #fff; /* Texto blanco por defecto */
+    display: inline-block;       /* Ajusta el ancho al contenido del texto */
+    max-width: 90%;             /* Limita el ancho máximo para evitar que sea demasiado grande */
+    padding: 10px;              /* Espaciado interno */
+    margin: 10px auto;          /* Centra el mensaje horizontalmente */
+    border-radius: 5px;         /* Bordes redondeados */
+    text-align: center;         /* Centra el texto dentro del cuadro */
+    box-sizing: border-box;     /* Incluye padding dentro del tamaño del cuadro */
 }
 
-/* Mensaje de éxito */
-.mensaje.exito {
-    background-color: #4CAF50; /* Verde */
-    border: 1px solid #45a049; /* Borde verde */
+.exito {
+    background-color: #a9dfbf;  /* Color verde claro para éxito */
+    color: #0e6251;             /* Color oscuro para texto */
+    border: 1px solid #82e0aa;  /* Borde verde claro */
 }
 
-/* Mensaje de error */
-.mensaje.error {
-    background-color: #f44336; /* Rojo */
-    border: 1px solid #d32f2f; /* Borde rojo */
+.error {
+    background-color: #f5b7b1;  /* Color rojo claro para errores */
+    color: #641e16;             /* Color oscuro para texto */
+    border: 1px solid #f1948a;  /* Borde rojo claro */
 }

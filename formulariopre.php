@@ -37,16 +37,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar'])) {
             $mail->Port = 465;
 
             // Configuración del correo
+            $mail->CharSet = 'UTF-8'; // Configura el charset a UTF-8
             $mail->setFrom('urquizapp2@gmail.com', 'Formulario Pre-Inscripción');
             $mail->addAddress($email_destinatario); // Correo ingresado en el formulario
             $mail->Subject = 'Confirmación de Pre-Inscripción';
-            $mail->Body = "Hola $nombre,\n\nGracias por completar el formulario de pre-inscripción.";
+            $mail->Body = "Hola $nombre,\n\nGracias por completar el formulario de pre-inscripción. Para completar la inscripción debera presertar la siguiente documentación impresa: \n• Documento Nacional de Identidad (DNI original y copia). \n• Partida de Nacimiento (Copia legalizada por tribunales). \n• Certificado de Título Secundario (Copia legalizada por tribunales) o constancia de título en trámite.";
 
             // Enviar correo
             $mail->send();
 
             // Guardar mensaje de éxito en la sesión
-            $_SESSION['mensaje'] = "Se envió un correo de confirmación a $email_destinatario.";
+            $_SESSION['mensaje'] = "Se envió un correo de confirmación a $email_destinatario. Por favor revisa tu correo eléctronico.";
         } catch (Exception $e) {
             // Guardar mensaje de error en la sesión
             $_SESSION['mensaje'] = "Error al enviar el correo: {$mail->ErrorInfo}";
@@ -78,6 +79,7 @@ if (isset($_SESSION['mensaje'])) {
 
 
 <form action="" method="post">
+
         <h1>Formulario de Pre-Inscripción</h1>
         <label for="nombre">Nombre <span class="mandatory">*</span></label>
         <input type="text" id="nombre" name="nombre" required>
