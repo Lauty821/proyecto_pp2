@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <title>Formulario de Pre-Inscripción</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+<title>Formulario de Pre-Inscripción</title>
 </head>
 <body>
 
 <?php
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -16,44 +17,67 @@ require '../proyectopp2/PHPMailer/src/Exception.php';
 require '../proyectopp2/PHPMailer/src/PHPMailer.php';
 require '../proyectopp2/PHPMailer/src/SMTP.php';
 
-session_start(); // Iniciar sesión para manejar mensajes temporales
+require './data_base/conexion.php'; // Incluir el archivo de conexión
 
-$mensaje = ""; // Variable para mostrar mensajes al usuario
+session_start(); // Iniciar sesión para manejar mensajes
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar'])) {
-    if (!empty($_POST['nombre']) && !empty($_POST['email'])) {
-        $nombre = htmlspecialchars($_POST['nombre']);
-        $email_destinatario = htmlspecialchars($_POST['email']);
-        $mail = new PHPMailer(true);
+    if (
+        !empty($_POST['nombre']) && 
+        !empty($_POST['apellido']) && 
+        !empty($_POST['DNI']) &&
+        !empty($_POST['domicilio']) &&
+        !empty($_POST['email']) &&
+        !empty($_POST['carrera'])
+    ) {
+        // Sanitizar y asignar valores del formulario
+        $nombre = $conexion->real_escape_string($_POST['nombre']);
+        $apellido = $conexion->real_escape_string($_POST['apellido']);
+        $dni = $conexion->real_escape_string($_POST['DNI']);
+        $domicilio = $conexion->real_escape_string($_POST['domicilio']);
+        $email = $conexion->real_escape_string($_POST['email']);
+        $carrera = $conexion->real_escape_string($_POST['carrera']);
 
-        try {
-            // Configuración del servidor SMTP
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com'; // Servidor SMTP
-            $mail->SMTPAuth = true;
-            $mail->Username = 'urquizapp2@gmail.com'; // Tu correo
-            $mail->Password = 'kjsi wlpz keen eqrp'; // Tu contraseña
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port = 465;
+        // Query SQL para insertar datos
+        $sql = "INSERT INTO pre_inscripcion (nombre, apellido, DNI, domicilio, email, carrera) 
+                VALUES ('$nombre', '$apellido', '$dni', '$domicilio', '$email', '$carrera')";
 
-            // Configuración del correo
-            $mail->CharSet = 'UTF-8'; // Configura el charset a UTF-8
-            $mail->setFrom('urquizapp2@gmail.com', 'Formulario Pre-Inscripción');
-            $mail->addAddress($email_destinatario); // Correo ingresado en el formulario
-            $mail->Subject = 'Confirmación de Pre-Inscripción';
-            $mail->Body = "Hola $nombre,\n\nGracias por completar el formulario de pre-inscripción. Para completar la inscripción debera presertar la siguiente documentación impresa: \n• Documento Nacional de Identidad (DNI original y copia). \n• Partida de Nacimiento (Copia legalizada por tribunales). \n• Certificado de Título Secundario (Copia legalizada por tribunales) o constancia de título en trámite.";
+        if ($conexion->query($sql) === TRUE) {
+            // Cerrar conexión antes de continuar
+            $conexion->close();
 
-            // Enviar correo
-            $mail->send();
+            // Enviar correo de confirmación
+            $mail = new PHPMailer(true);
 
-            // Guardar mensaje de éxito en la sesión
-            $_SESSION['mensaje'] = "Se envió un correo de confirmación a $email_destinatario. Por favor revisa tu correo eléctronico.";
-        } catch (Exception $e) {
-            // Guardar mensaje de error en la sesión
-            $_SESSION['mensaje'] = "Error al enviar el correo: {$mail->ErrorInfo}";
+            try {
+                // Configuración del servidor SMTP
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'urquizapp2@gmail.com';
+                $mail->Password = 'kjsi wlpz keen eqrp'; // Asegúrate de usar credenciales seguras
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port = 465;
+
+                // Configuración del correo
+                $mail->CharSet = 'UTF-8';
+                $mail->setFrom('urquizapp2@gmail.com', 'Formulario Pre-Inscripción');
+                $mail->addAddress($email);
+                $mail->Subject = 'Confirmación de Pre-Inscripción';
+                $mail->Body = "Hola $nombre,\n\nGracias por completar el formulario de pre-inscripción. Para completar la inscripción deberás presentar la siguiente documentación impresa:\n• DNI (original y copia)\n• Partida de Nacimiento (Copia legalizada por tribunales)\n• Certificado de Título Secundario (Copia legalizada por tribunales) o constancia de título en trámite.";
+
+                // Enviar correo
+                $mail->send();
+
+                $_SESSION['mensaje'] = "Registro exitoso. Se envió un correo de confirmación a $email.";
+            } catch (Exception $e) {
+                $_SESSION['mensaje'] = "Registro exitoso, pero hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
+        } else {
+            $_SESSION['mensaje'] = "Error al guardar los datos: " . $conexion->error;
         }
 
-        // Redirigir para evitar reenvío
+        // Redirigir para evitar reenvío del formulario
         header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     } else {
@@ -62,20 +86,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar'])) {
         exit;
     }
 }
+if (isset($_SESSION['mensaje'])) {
+    $claseMensaje = strpos($_SESSION['mensaje'], 'Error') !== false ? 'error' : 'exito';
+    echo "<div class='mensaje $claseMensaje'>{$_SESSION['mensaje']}</div>";
+    unset($_SESSION['mensaje']);
+}
 
 // Mostrar mensaje desde la sesión, si existe, y luego destruirlo
 if (isset($_SESSION['mensaje'])) {
-    $mensaje = $_SESSION['mensaje'];
-    unset($_SESSION['mensaje']); // Destruir el mensaje después de mostrarlo
+    echo "<p>{$_SESSION['mensaje']}</p>";
+    unset($_SESSION['mensaje']); // Eliminar el mensaje después de mostrarlo
 }
 ?>
-
 
 <?php if (!empty($mensaje)): ?>
     <div class="mensaje <?= strpos($mensaje, 'Error') !== false ? 'error' : 'exito'; ?>">
         <?= htmlspecialchars($mensaje) ?>
     </div>
 <?php endif; ?>
+
 
 
 <form action="" method="post">
@@ -87,8 +116,8 @@ if (isset($_SESSION['mensaje'])) {
         <label for="apellido">Apellido <span class="mandatory">*</span></label>
         <input type="text" id="apellido" name="apellido" required>
 
-        <label for="documento">Número de documento <span class="mandatory">*</span></label>
-        <input type="text" id="documento" name="documento" required>
+        <label for="DNI">DNI <span class="mandatory">*</span></label>
+        <input type="text" id="DNI" name="DNI" required>
 
         <label for="fecha_nacimiento">Fecha de Nacimiento <span class="mandatory">*</span></label>
         <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
@@ -101,23 +130,23 @@ if (isset($_SESSION['mensaje'])) {
             <option value="otro">Otro</option>
         </select>
 
-        <label for="direccion">Dirección <span class="mandatory">*</span></label>
-        <input type="text" id="direccion" name="direccion" required>
-
-        <label for="localidad">Localidad <span class="mandatory">*</span></label>
-        <input type="text" id="localidad" name="localidad" required>
-
-        <label for="provincia">Provincia <span class="mandatory">*</span></label>
-        <input type="text" id="provincia" name="provincia" required>
-
-        <label for="nacionalidad">Nacionalidad <span class="mandatory">*</span></label>
-        <input type="text" id="nacionalidad" name="nacionalidad" required>
+        <label for="telefono">Número de Teléfono <span class="mandatory">*</span></label>
+        <input type="tel" id="telefono" name="telefono" required>
 
         <label for="email">Correo Electrónico <span class="mandatory">*</span></label>
         <input type="email" id="email" name="email" required>
 
-        <label for="telefono">Número de Teléfono <span class="mandatory">*</span></label>
-        <input type="tel" id="telefono" name="telefono" required>
+        <label for="provincia">Provincia <span class="mandatory">*</span></label>
+        <input type="text" id="provincia" name="provincia" required>
+
+        <label for="localidad">Localidad <span class="mandatory">*</span></label>
+        <input type="text" id="localidad" name="localidad" required>
+
+        <label for="domicilio">Domicilio <span class="mandatory">*</span></label>
+        <input type="text" id="domicilio" name="domicilio" required>
+
+        <label for="nacionalidad">Nacionalidad <span class="mandatory">*</span></label>
+        <input type="text" id="nacionalidad" name="nacionalidad" required>
 
         <label for="escuela">Escuela donde realizó sus estudios secundarios <span class="mandatory">*</span></label>
         <input type="text" id="escuela" name="escuela" required>
@@ -133,6 +162,14 @@ if (isset($_SESSION['mensaje'])) {
             <option value="">Seleccione</option>
             <option value="si">Sí</option>
             <option value="no">No</option>
+        </select>
+
+        <label>Carrera que quiere elegir <span class="mandatory">*</span></label>
+        <select name="carrera" required>
+            <option value="">Seleccione</option>
+            <option value="af">Análisis Funcional (AF)</option>
+            <option value="ds">Desarrollo de Software (DS)</option>
+            <option value="iti">Infraestructura de Tecnología de la Información (ITI)</option>
         </select>
 
         <div class="form-actions">

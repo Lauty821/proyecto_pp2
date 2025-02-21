@@ -1,34 +1,26 @@
 -- Creación de la base de datos y selección de la misma
-CREATE DATABASE IF NOT EXISTS db_urquiza;
-USE db_urquiza;
+CREATE DATABASE IF NOT EXISTS db_urquiza_actualizada;
+USE db_urquiza_actualizada;
 
 
-CREATE TABLE Inscripción (
-	ID_Inscripcion INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(200) NOT NULL,
-    Apellido VARCHAR(200) NOT NULL,
-    DNI INT(8) NOT NULL,
-    Fecha_Nacimiento DATE,
-    Genero VARCHAR(50) NOT NULL,
-    Direccion VARCHAR(200) NOT NULL,
-    Localidad VARCHAR(200) NOT NULL,
-    Provincia VARCHAR(200) NOT NULL,
-    Nacionalidad VARCHAR(200) NOT NULL,
-    Email VARCHAR(200) NOT NULL,
-    Telefono VARCHAR(200) NOT NULL,
-    Secundario_Realizado VARCHAR(200) NOT NULL,
-    Localidad_Escuela VARCHAR(200) NOT NULL,
-    Provincia_Escuela VARCHAR(200) NOT NULL,
-    Secundario_Complejo VARCHAR(2) NOT NULL
+CREATE TABLE pre_inscripcion (
+	ID_pre_inscripcion INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(45) NOT NULL,
+    Apellido VARCHAR(45) NOT NULL,
+    DNI INT NOT NULL,
+    Domicilio VARCHAR(200),
+	Email VARCHAR(200),
+	Carrera ENUM('af', 'ds', 'iti') NOT NULL
 );
 
 CREATE TABLE Alumnos (
     ID_Alumno INT PRIMARY KEY AUTO_INCREMENT,
     Nombre VARCHAR(45) NOT NULL,
     Apellido VARCHAR(45) NOT NULL,
-    DNI INT NOT NULL,
-    Mail VARCHAR(45),
-    Domicilio VARCHAR(45)
+	Documento INT(20) NOT NULL,
+    Domicilio VARCHAR(45),
+	Email VARCHAR(45),
+	carrera VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Docentes (
@@ -36,8 +28,8 @@ CREATE TABLE Docentes (
     Nombre VARCHAR(45) NOT NULL,
     Apellido VARCHAR(45) NOT NULL,
     Legajo VARCHAR(45) NOT NULL,
-    Mail VARCHAR(45),
-    Domicilio VARCHAR(45)
+    Domicilio VARCHAR(45),
+	Email VARCHAR(45)
 );
 
 CREATE TABLE Bedeles (
@@ -132,7 +124,13 @@ CREATE TABLE inscripciones (
     FOREIGN KEY (materia_id) REFERENCES Materias(id)  -- Asegúrate de usar 'id'
 );
 
+CREATE TABLE configuracion (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    clave VARCHAR(50) UNIQUE NOT NULL,
+    valor INT NOT NULL
+);
 
+INSERT INTO configuracion (clave, valor) VALUES ('max_inscripciones', 100); -- 100 es el valor por defecto, se puede moficiar
 
 INSERT INTO carreras (nombre) VALUES 
     ('Analista Funcional'), 
